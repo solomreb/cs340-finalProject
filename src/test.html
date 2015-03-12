@@ -9,8 +9,11 @@
  
 <form>
     <label for="username">Username :</label>
-    <input type="text" name ="username" id="username" onblur="PostData()" />
+    <input type="text" name ="username" id="username"" />
     <div id="div1"></div>
+    <label for="pwd">Password :</label>
+    <input type="password" name ="pwd" id="pwd"" />
+    <div id="div2"></div>
     <input type="button" value ="Check" onclick="PostData()" />
 </form>
  
@@ -28,11 +31,13 @@ function PostData() {
         throw new Error("Ajax is not supported by this browser");
     }
     
-    // 2. Define what to do when XHR feed you the response from the server - Start
+    // 2. Define what to do when XHR feeds you the response from the server
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status == 200 && xhr.status < 300) {
-                document.getElementById('div1').innerHTML = xhr.responseText;
+            //console.log(xhr.responseText);
+            console.log(xhr.responseText.userResult);
+            //    document.getElementById('div1').innerHTML = xhr.responseText;
             }
         }
     }
