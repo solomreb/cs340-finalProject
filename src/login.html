@@ -1,5 +1,6 @@
 <!doctype html>
 <head>
+<!-- Some code borrowed from http://help.dottoro.com/ljppxrti.php -->
     <script type="text/javascript" src="ajax_form.js"></script>
     <style>
         .error {
@@ -43,11 +44,12 @@
                 
                 if (IsRequestSuccessful (httpRequest)) {    // defined in ajax_form.js
                     if (httpRequest.responseText === "ok") {    // registration is successful
+                    	
                         alert ("Thank you for registering");
-                        /*
-                            // if redirection is required
-                        location.href = "/index.php";
-                        */
+                        //send username, password to createAccount.php
+                        AjaxSend(document.getElementById("registerForm"), 'createAccount.php', 'post');
+                        //location.href = "http://web.engr.oregonstate.edu/~solomreb/cs340/finalProject/src/";
+
                     }
                     else {  // some fields are invalid
                         ShowErrorFields (httpRequest.responseText);
@@ -108,11 +110,11 @@
     </script>
 </head>
 <body>
-    Register Username
+    <fieldset>
+    <legend>Register Username</legend><br>
     The username must be between 2 and 20 characters, the password must be between 6 and 20 characters.
 
-    <br /><br />
-    <form onsubmit="AjaxSend (this, 'verify.php', 'post'); return false;">
+    <form id="registerForm" onsubmit="AjaxSend (this, 'verify.php', 'post'); return false;">
         User Name: <input type="text" name="userName" />
         <div class="error" id="error1">Must be between 2 and 20 characters.</div>
         <div class="error" id="error2">A user already exists with that username.</div>
@@ -126,6 +128,22 @@
         <input type="submit" value="Register" />
         <div id="progress">Registering</div>
     </form>
+    </fieldset>
+    
+    <br><br>
+    
+    <fieldset>
+    <legend>Sign In</legend><br>
+    <form onsubmit="AjaxSend (this, 'startSession.php', 'post'); return false;">
+        User Name: <input type="text" name="userName" />
+        <div class="error" id="error1">Invalid username/password combination.</div>
+        <br /><br />
+        Password: <input type="password" name="password" />
+        <br /><br />
+        <input type="submit" value="Register" />
+        <div id="progress">Signing in</div>
+    </form>
+    </fieldset>
     
     
     
