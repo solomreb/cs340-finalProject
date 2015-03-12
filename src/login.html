@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<script type="text/javascript">
+    function validateForm(formName){
+        var field = document.getElementById(formName).elements;
+        for(var i = 0; i < field.length-1; i++)
+        {
+        	if (field[i].value == null || field[i].value == ''){
+        		alert(field[i].name + " must be filled in. ");
+        		return false;
+        	}
+        } 
+
+    }
+</script>
+<script src="jquery-1.11.2.min.js"></script> 
+<script type="text/javascript">  
+
+$(document).ready(function(){
+	$("#check").click(function(){
+		alert("hi");
+	})
+
+
+}
+
+</script>
+</head>
+<body>
+	<h2>Dog Database</h2>
+	<fieldset>
+	<legend> Login </legend>
+    <!--<form id="loginForm" name="loginForm" onsubmit="return validateForm(this.id)"> -->
+        <div>Username: <input type="text" id='username' name="username"></div><input type="button" id="check" value="Check Availability"></input><span id="user-result"></span><br>
+        <div>Password: <input type="password" name="password"></div><br />
+        <input type="submit" value="Login"" /> 
+    <!--</form>-->
+    </fieldset>
+</body>
+</html>

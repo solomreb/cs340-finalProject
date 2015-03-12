@@ -1,7 +1,15 @@
-function validateForm(form) {
-    var name = document.forms["form"]["name"].value;
-    if (name == null || name == "") {
-        alert("Field must be filled out"); //how to include actual name of field in alert?
-        return false;
-    }
+//functions.js
+
+
+function validateForm(formName)
+{
+	var field = document.getElementById(formName).elements;
+	for(var i = 0; i < field.length-1; i++)
+	{
+		if (field[i].value == null || field[i].value == ''){
+			alert(field[i].name + " must be filled in. ");
+			return false;
+		}
+	} 
+
 }

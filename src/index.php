@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
-
+<!-- index.php -->
 <head>
-	<script>
-function validateForm() {
-	var form = document.forms[0];
-	var i;
-	for(i=0; i<form.length; i++){
-		var field = form.elements[i].value;
-		document.write(field.getAttribute('name'));
-		if (field == null || field == "") {
-			//alert(field.getAttribute('name') + " must be filled out");
-			return false;
-		}
-	}
-}
+	<script src="/src/functions.js"></script>
+	<script type="text/javascript">
+    function validateForm(formName)
+    {
+        var field = document.getElementById(formName).elements;
+        for(var i = 0; i < field.length-1; i++)
+        {
+        	if (field[i].value == null || field[i].value == ''){
+        		alert(field[i].name + " must be filled in. ");
+        		return false;
+        	}
+        } 
+    }
 </script>
 	<meta charset="UTF-8">
 	<title>CS 290 Final Project</title>
