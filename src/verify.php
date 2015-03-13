@@ -1,5 +1,14 @@
 <?php
+include 'storedInfo.php';
+//header('Location: index.php');
 
+$mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
+if (!$mysqli || $mysqli->connect_errno){
+    echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+    }
+else{
+	console.log( "connection successful");
+	}
 
 
 define("ERR_INVALID_FNAME", "1");
@@ -13,6 +22,29 @@ define("ERR_DIFFERENT_PASSWORDS", "8");
 
 
 $errors = array ();
+
+if (isset ($_POST["userName"])) {
+    $username = $_POST["userName"];
+    $len = strlen ($username);
+    if ($len < 2 || $len > 20) {
+        array_push ($errors, ERR_INVALID_USERNAME);
+    }
+    else {            // check the name of registered users
+        $query = "select username from `solomreb-db`.`walkers` where username = ? ";
+		$stmt = $mysqli->prepare($query);
+		$stmt->bind_param('s',$username);
+		$stmt->execute();
+		$stmt->store_result();
+		$numRows = $stmt->num_rows;
+		if($stmt->num_rows>0){
+			array_push ($errors, ERR_EXISTING_USERNAME);
+		}
+    }
+}
+else {
+    array_push ($errors, ERR_INVALID_USERNAME);
+}
+
 if (isset ($_POST["fname"])) {
     $fname = $_POST["fname"];
     $len = strlen ($fname);
@@ -44,22 +76,7 @@ if (isset ($_POST["email"])) {
 }
 
 
-if (isset ($_POST["userName"])) {
-    $username = $_POST["userName"];
-    $len = strlen ($username);
-    if ($len < 2 || $len > 20) {
-        array_push ($errors, ERR_INVALID_USERNAME);
-    }
-    else {
-            // check the name of registered users
-        if (strcasecmp ($username, "Dottoro") == 0) {
-            array_push ($errors, ERR_EXISTING_USERNAME);
-        }
-    }
-}
-else {
-    array_push ($errors, ERR_INVALID_USERNAME);
-}
+
 
 if (isset ($_POST["password"])) {
     $password = $_POST["password"];

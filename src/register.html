@@ -58,10 +58,9 @@
                 if (IsRequestSuccessful (httpRequest)) {    // defined in ajax_form.js
                     if (httpRequest.responseText === "ok") {    // registration is successful
                         alert ("Thank you for registering");
-                        /*
-                            // if redirection is required
-                        location.href = "/index.php";
-                        */
+                        AjaxSend (form, 'createAccount.php', 'post')
+                        //location.href = "/index.php";
+                        
                     }
                     else {  // some fields are invalid
                         ShowErrorFields (httpRequest.responseText);
