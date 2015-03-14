@@ -19,12 +19,15 @@ if (!$mysqli || $mysqli->connect_errno){
   	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-  	<div class="container-fluid">
-		<h2> Dog Walking Database </h2>
-	</div>
 </head>
 
 <body>
+    <div class="container">
+      <h2>Dog Walking Database</h2>
+
+        <p class="navbar-text navbar-right"><a href="logout.php" class="navbar-link">Log out</a></p>       
+
+    </div>
 <div class="container-fluid">
 <?php
 
@@ -34,7 +37,7 @@ $query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
 echo <<<END
-<form name="walkerAvailabiity" method="get" action="index.php">
+<form name="walkerAvailabiity" method="get" action="editAvailability.php">
 	<table>
 		<thead><h3>Select your availability</h3>
 			<tr style="height: 30px">
@@ -50,7 +53,7 @@ echo <<<END
 		</thead>
 		<tbody> 
 END;
-	echo "<tr><td>Morning</td>";
+	echo "<tr height='25px'><td>Morning</td>";
 $avail = [];
 while ($row = mysqli_fetch_array($stmt)) {
 	$slot = $row['time_id'];
@@ -64,7 +67,7 @@ for($i=1; $i<22; $i+=3){
 		echo "<td><input type='checkbox' name='" . $i . "' value='" . $i . "'></td>";
 	}
 }
-	echo "</tr><tr><td>Afternoon</td>";
+	echo "</tr><tr height='25px'><td>Afternoon</td>";
 for($i=2; $i<22; $i+=3){
 	if (array_key_exists($i, $avail)){
 		echo "<td><input type='checkbox' checked name='" . $i . "' value='" . $i . "'></td>";
@@ -73,7 +76,7 @@ for($i=2; $i<22; $i+=3){
 		echo "<td><input type='checkbox' name='" . $i . "' value='" . $i . "'></td>";
 	}
 }
-	echo "</tr><tr><td>Evening</td>";
+	echo "</tr><tr height='25px'><td>Evening</td>";
 for($i=3; $i<22; $i+=3){
 	if (array_key_exists($i, $avail)){
 		echo "<td><input type='checkbox' checked name='" . $i . "' value='" . $i . "'></td>";
@@ -83,7 +86,7 @@ for($i=3; $i<22; $i+=3){
 	}
 }
 echo <<<END
-				</tr><tr>
+				</tr><tr height='35px'>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -91,7 +94,7 @@ echo <<<END
 				<td></td>
 				<td></td>
 				<td></td>
-				<td><input type="submit"/></td>
+				<td><input type="submit" value="Save"/></td>
 			</tr>
 		</tbody>
 	</table>

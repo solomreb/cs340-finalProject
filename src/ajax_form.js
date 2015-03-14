@@ -1,6 +1,5 @@
 
 function CreateRequestObj () {
-        // although IE supports the XMLHttpRequest object, but it does not work on local files.
     var forceActiveX = (window.ActiveXObject && location.protocol === "file:");
     if (window.XMLHttpRequest && !forceActiveX) {
         return new XMLHttpRequest();
@@ -12,7 +11,7 @@ function CreateRequestObj () {
     }
 }
 
-    // create HTTP request body form form data
+    // create HTTP request body from form data
 function GetMessageBody (form) {
     var data = "";
     for (var i = 0; i < form.elements.length; i++) {

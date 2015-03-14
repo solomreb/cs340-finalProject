@@ -6,18 +6,18 @@ if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
 }
 
-define("ERR_INVALID_USERNAME", "5");
-
+define("ERR_INVALID_USERNAME", "1");
+define("ERR_NO_USERNAME", "2");
+define("ERR_INVALID_PASSWORD", "3");
+define("ERR_NO_USERNAME", "4");
 
 
 $errors = array ();
 
-//username is set
-if (isset ($_POST["userName"])) {
+if (isset ($_POST["userName"]) && $_POST["userName"] != "" && $_POST["userName"] != null) {
 //username is set. check if it exists in the db
     $username = $_POST["userName"];
-
-	$query = "select username from users where username = ? ";
+	$query = "select username from walkers where username = ? ";
 	$stmt = $mysqli->prepare($query);
 	$stmt->bind_param('s',$username);
 	$stmt->execute();
@@ -32,15 +32,16 @@ if (isset ($_POST["userName"])) {
 
 else {
 //no username entered
-    array_push ($errors, ERR_INVALID_USERNAME);
+    array_push ($errors, ERR_NO_USERNAME);
 }
 
 
-if (isset ($_POST["password"])) {
+if (isset ($_POST["password"]) && $_POST["password"] != "" && $_POST["password"] != null) {
+
 //password is set. check if matches for username
     $password = $_POST["password"];
     
-    $query = "select username from users where username = ? AND pwd = ?";
+    $query = "SELECT username FROM walkers WHERE username = ? AND pwd = ?";
 	$stmt = $mysqli->prepare($query);
 	$stmt->bind_param('ss', $username, $password);
 	$stmt->execute();
@@ -48,24 +49,31 @@ if (isset ($_POST["password"])) {
 	$numRows = $stmt->num_rows;
 	if($stmt->num_rows<=0){
 		//username/password combo does not exist in db
-		array_push ($errors, ERR_INVALID_USERNAME);
+		array_push ($errors, ERR_INVALID_PASSWORD);
 	}
 	$stmt->close();
 
 }
 else {
-    array_push ($errors, ERR_INVALID_PASSWORD);
+    array_push ($errors, ERR_NO_PASSWORD);
 }
 
-$response = "";
 if (sizeof ($errors) > 0) {
     $response = implode (",", $errors);
 }
 else {
-        // start session for given username ...
-    
+	session_start();
+	$_SESSION['username']= $username;
+	$query = "SELECT walker_id FROM walkers WHERE username= '$username'";
+	$stmt = $mysqli->prepare($query);
+	$stmt->execute();
+	$stmt->bind_result($walker_id);
+	$stmt->fetch();
+	$_SESSION['walker_id'] = $walker_id;
+	console.log("walker_id = '$walker_id'");
     $response = "ok";
 }
+
 
 echo ($response);	
 
