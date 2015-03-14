@@ -1,77 +1,105 @@
-<!DOCTYPE html>
-<html>
-<!-- index.php -->
-<head>
-	<script src="/src/functions.js"></script>
-	<script type="text/javascript">
-    function validateForm(formName)
-    {
-        var field = document.getElementById(formName).elements;
-        for(var i = 0; i < field.length-1; i++)
-        {
-        	if (field[i].value == null || field[i].value == ''){
-        		alert(field[i].name + " must be filled in. ");
-        		return false;
-        	}
-        } 
-    }
-</script>
-	<meta charset="UTF-8">
-	<title>CS 290 Final Project</title>
-	<style>
-		table, th, td {
-	    	border: 1px solid black;
-		}
-		.error {color: red;}
-	</style>
-<h2> Dog Walking Database </h2>
-</head>
-
-<body>
-
 <?php
 include 'storedInfo.php';
-include 'functions.php';
+session_start();
+$walker_id = $_SESSION['walker_id'];
+$username = $_SESSION['username'];
+echo "Logged in as " . $username . "<br>";
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
     }
-
 ?>
 
-<form  name="addForm" method="get" onsubmit="return validateForm()">
- <fieldset>
-  <legend>Add Dog:</legend>
-	Name: <input type="text" name="name" id="nameInput">
-	Breed: 
-	<?php 
-	$breeds = mysqli_query($mysqli,'SELECT DISTINCT breed_description FROM breeds ORDER');
-	echo "<select name='category'>";
-		while ($item = mysqli_fetch_array($breeds)) {
-		if ($item['breed_description'] == '')
-			break;
-		echo "<option value='".$item['breed_description']."'>".$item['breed_description']."</option>";
+<!DOCTYPE html>
+<html>
+<!-- index.php -->
+<head>
+  	<title>Dog Walking Database</title>
+  	<meta charset="utf-8">
+  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  	<div class="container-fluid">
+		<h2> Dog Walking Database </h2>
+	</div>
+</head>
+
+<body>
+<div class="container-fluid">
+<?php
+
+$query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
+
+	if (!($stmt = mysqli_query($mysqli, $query))) {
+		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
-	echo "</select>";
-	?>
-	Owner First Name: <input type="text" name="fname" id=ownerFNameInput>
-	Owner Last Name: <input type="text" name="lname" id=ownerLNameInput>
-    <input type="submit" value="Add">
-<br>	
+echo <<<END
+<form name="walkerAvailabiity" method="get" action="index.php">
+	<table>
+		<thead><h3>Select your availability</h3>
+			<tr style="height: 30px">
+				<th style="width: 10%;"></th>
+				<th style="width: 10%;">Sunday</th>
+				<th style="width: 10%;">Monday</th>
+				<th style="width: 10%;">Tuesday</th>
+				<th style="width: 10%;">Wednesday</th>
+				<th style="width: 10%;">Thursday</th>
+				<th style="width: 10%;">Friday</th>
+				<th style="width: 10%;">Saturday</th>
+			</tr>
+		</thead>
+		<tbody> 
+END;
+	echo "<tr><td>Morning</td>";
+$avail = [];
+while ($row = mysqli_fetch_array($stmt)) {
+	$slot = $row['time_id'];
+	$avail[$slot] = 1;
+}
+for($i=1; $i<22; $i+=3){
+	if (array_key_exists($i, $avail)){
+		echo "<td><input type='checkbox' checked name='" . $i . "' value='" . $i . "'></td>";
+	}
+	else {
+		echo "<td><input type='checkbox' name='" . $i . "' value='" . $i . "'></td>";
+	}
+}
+	echo "</tr><tr><td>Afternoon</td>";
+for($i=2; $i<22; $i+=3){
+	if (array_key_exists($i, $avail)){
+		echo "<td><input type='checkbox' checked name='" . $i . "' value='" . $i . "'></td>";
+	}
+	else {
+		echo "<td><input type='checkbox' name='" . $i . "' value='" . $i . "'></td>";
+	}
+}
+	echo "</tr><tr><td>Evening</td>";
+for($i=3; $i<22; $i+=3){
+	if (array_key_exists($i, $avail)){
+		echo "<td><input type='checkbox' checked name='" . $i . "' value='" . $i . "'></td>";
+	}
+	else {
+		echo "<td><input type='checkbox' name='" . $i . "' value='" . $i . "'></td>";
+	}
+}
+echo <<<END
+				</tr><tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><input type="submit"/></td>
+			</tr>
+		</tbody>
+	</table>
 </form>
-
-
-<?php 
-	$dogsClientsquery= "SELECT d.name AS dog_name, c.fname AS client_fname, c.lname AS client_lname, c.address AS address, c.phone AS phone FROM clients c INNER JOIN dogs d ON c.client_id = d.owner_id";
-	displayDogs($mysqli, $dogsClientsquery ); 
+</div>
+END;
 ?>
-<form method="get" action="deleteAll.php">
- <fieldset>
-  
-    <input type="submit" value="edit">
- </fieldset>
-	
-</form>
 
+</div>
 </body>
 </html>
