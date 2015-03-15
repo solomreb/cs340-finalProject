@@ -1,4 +1,5 @@
 <?php
+//index.php
 include 'storedInfo.php';
 session_start();
 $walker_id = $_SESSION['walker_id'];
@@ -28,8 +29,13 @@ if (!$mysqli || $mysqli->connect_errno){
         <p class="navbar-text navbar-right"><?php echo "Logged in as " . $username . "<br>";?><a href="logout.php" class="navbar-link">Log out</a></p>       
 
     </div>
-<hr>
-<div class="container-fluid" id ="walkerInfo">
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Update Contact Info</h3>
+  </div>
+  <div class="panel-body">
+
 <?php
 
 $query = "SELECT * FROM walkers WHERE walker_id = '$walker_id'";
@@ -37,7 +43,7 @@ $query = "SELECT * FROM walkers WHERE walker_id = '$walker_id'";
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
 	
-echo "<form name='walkerInfo' method='get' action='editContactInfo.php' class='form-inline'><table><h3>Update your Info</h3>";
+echo "<form name='walkerInfo' method='get' action='editContactInfo.php' class='form-inline'><table>";
 while ($row = mysqli_fetch_array($stmt)) {
 	echo "<tr><td>" . $row['fname'] . " " . $row['lname'] ."</td></tr>";
 	echo "<tr><td>Phone<input type='tel' name='phone' value='" . $row['phone'] . "'>";
@@ -49,7 +55,11 @@ $stmt->close();
 ?>
 
 </div>
-<div class="container-fluid" id ="walkerAvailability">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Update Your Availability</h3>
+  </div>
+  <div class="panel-body">
 <?php
 
 $query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
@@ -60,7 +70,7 @@ $query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
 echo <<<END
 <hr><form name="walkerAvailabiity" method="get" action="editAvailability.php">
 	<table>
-		<thead><h3>Select your availability</h3>
+		<thead>
 			<tr style="height: 30px">
 				<th style="width: 10%;"></th>
 				<th style="width: 10%;">Sunday</th>
@@ -123,6 +133,11 @@ echo <<<END
 </div>
 END;
 ?>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">My Dogs</h3>
+  </div>
+  
 <div class="container-fluid" id ="assign">
 <form action="errors.php">
 <input type="submit" value="Assign me to dogs">
@@ -141,11 +156,9 @@ $query = "SELECT DISTINCT d.dog_id, t.day_of_week, t.time_of_day, d.name, c.fnam
 	if (!($stmt = mysqli_query($mysqli, $query))) {
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
-	else{echo "Prepare successful<br>";}
-$numRows = $stmt->num_rows;
 
 echo " <table class='table table-hover'>	
-		<thead><h3>Your dogs</h3>	
+		<thead>	
 			<tr style='height: 30px'>	
 				<th style='width: 20%;'>Time</th>
 				<th style='width: 10%;'>Dog</th>
@@ -168,7 +181,7 @@ while ($row = mysqli_fetch_array($stmt)) {
 		echo "<td>" . $row['phone'] . "</td>";
 		
 		echo "<td><form method=\"GET\" action=\"viewDog.php\">";
-		echo "<input type=\"hidden\" name=\"nameid\" value=\"".$row['dog_id']."\">";
+		echo "<input type=\"hidden\" name=\"dogid\" value=\"".$row['dog_id']."\">";
 		echo "<input type=\"submit\" value=\"View Details\">";
 		echo "</form> </td><tr>";
 
@@ -178,8 +191,6 @@ echo" </tbody>
 	</table>
 </div>";
 ?>
-
-
 </div>
 
 </div>
