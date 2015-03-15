@@ -4,10 +4,12 @@ session_start();
 $walker_id = $_SESSION['walker_id'];
 $username = $_SESSION['username'];
 echo "Logged in as " . $username . "<br>";
+echo "walker id = " . $walker_id ; 
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
     }
+ 
 ?>
 
 <!DOCTYPE html>
@@ -17,8 +19,9 @@ if (!$mysqli || $mysqli->connect_errno){
   	<title>Dog Walking Database</title>
   	<meta charset="utf-8">
   	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
 </head>
 
 <body>
@@ -28,7 +31,27 @@ if (!$mysqli || $mysqli->connect_errno){
         <p class="navbar-text navbar-right"><a href="logout.php" class="navbar-link">Log out</a></p>       
 
     </div>
-<div class="container-fluid">
+
+<div class="container-fluid" id ="walkerInfo">
+<?php
+
+$query = "SELECT * FROM walkers WHERE walker_id = '$walker_id'";
+	if (!($stmt = mysqli_query($mysqli, $query))) {
+		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+	
+echo "<form name='walkerInfo' method='get' action='errors.php'><table><h3>Update your Info</h3>";
+while ($row = mysqli_fetch_array($stmt)) {
+	echo "<tr><td>" . $row['fname'] . " " . $row['lname'] ."</td></tr>";
+	echo "<tr><td>Phone<input type='text' name='phone' value='" . $row['phone'] . "'>";
+	echo "<td>Email<input type='text' name='email' value='" . $row['email'] . "'>";
+}
+
+echo "<td><input type='submit' value='Save'></td></tr></tbody></table></form></div>";
+?>
+
+</div>
+<div class="container-fluid" id ="walkerAvailability">
 <?php
 
 $query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
@@ -37,7 +60,7 @@ $query = "SELECT time_id FROM walkers_time WHERE walker_id = '$walker_id'";
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
 echo <<<END
-<form name="walkerAvailabiity" method="get" action="editAvailability.php">
+<hr><form name="walkerAvailabiity" method="get" action="editAvailability.php">
 	<table>
 		<thead><h3>Select your availability</h3>
 			<tr style="height: 30px">
@@ -102,6 +125,10 @@ echo <<<END
 </div>
 END;
 ?>
+
+<form action="errors.php">
+<input type="submit" value="assign">
+</form>
 
 </div>
 </body>
