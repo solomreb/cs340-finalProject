@@ -3,8 +3,6 @@ include 'storedInfo.php';
 session_start();
 $walker_id = $_SESSION['walker_id'];
 $username = $_SESSION['username'];
-echo "Logged in as " . $username . "<br>";
-echo "walker id = " . $walker_id ; 
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
@@ -27,11 +25,10 @@ if (!$mysqli || $mysqli->connect_errno){
 <body>
     <div class="container">
       <h2>Dog Walking Database</h2>
-
-        <p class="navbar-text navbar-right"><a href="logout.php" class="navbar-link">Log out</a></p>       
+        <p class="navbar-text navbar-right"><?php echo "Logged in as " . $username . "<br>";?><a href="logout.php" class="navbar-link">Log out</a></p>       
 
     </div>
-
+<hr>
 <div class="container-fluid" id ="walkerInfo">
 <?php
 
@@ -40,14 +37,15 @@ $query = "SELECT * FROM walkers WHERE walker_id = '$walker_id'";
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
 	
-echo "<form name='walkerInfo' method='get' action='errors.php'><table><h3>Update your Info</h3>";
+echo "<form name='walkerInfo' method='get' action='editContactInfo.php' class='form-inline'><table><h3>Update your Info</h3>";
 while ($row = mysqli_fetch_array($stmt)) {
 	echo "<tr><td>" . $row['fname'] . " " . $row['lname'] ."</td></tr>";
-	echo "<tr><td>Phone<input type='text' name='phone' value='" . $row['phone'] . "'>";
-	echo "<td>Email<input type='text' name='email' value='" . $row['email'] . "'>";
+	echo "<tr><td>Phone<input type='tel' name='phone' value='" . $row['phone'] . "'>";
+	echo "<td>Email<input type='email' name='email' value='" . $row['email'] . "'>";
 }
 
 echo "<td><input type='submit' value='Save'></td></tr></tbody></table></form></div>";
+$stmt->close();
 ?>
 
 </div>
@@ -125,10 +123,64 @@ echo <<<END
 </div>
 END;
 ?>
-
+<div class="container-fluid" id ="assign">
 <form action="errors.php">
-<input type="submit" value="assign">
+<input type="submit" value="Assign me to dogs">
 </form>
+<?php
+
+$query = "SELECT DISTINCT d.dog_id, t.day_of_week, t.time_of_day, d.name, c.fname, c.lname, c.address, c.phone FROM clients c INNER JOIN " . 
+	"dogs d ON c.client_id = d.owner_id INNER JOIN " .
+	"dogs_time dt ON d.dog_id = dt.dog_id INNER JOIN " .
+	"time_slots t ON dt.time_id = t.time_id INNER JOIN " .
+	"walkers_time wt ON t.time_id = wt.time_id INNER JOIN " .
+	"walkers w ON w.walker_id = w.walker_id INNER JOIN " .
+	"dogs_walkers dw ON w.walker_id = dw.walker_id " .
+	"WHERE w.walker_id = '$walker_id'";
+
+	if (!($stmt = mysqli_query($mysqli, $query))) {
+		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+	else{echo "Prepare successful<br>";}
+$numRows = $stmt->num_rows;
+
+echo " <table class='table table-hover'>	
+		<thead><h3>Your dogs</h3>	
+			<tr style='height: 30px'>	
+				<th style='width: 20%;'>Time</th>
+				<th style='width: 10%;'>Dog</th>
+				<th style='width: 10%;'>Client</th>
+				<th style='width: 10%;'>Address</th>
+				<th style='width: 10%;'>Phone</th>
+				<th style='width: 10%;'>
+			</tr>
+		</thead>
+		<tbody>"; 
+
+
+while ($row = mysqli_fetch_array($stmt)) {
+		
+		echo "<tr>";
+		echo "<td>" . $row['day_of_week'] . " " . $row['time_of_day'] . "</td>";
+		echo "<td>" . $row['name'] . "</td>";
+		echo "<td>" . $row['fname'] . " " . $row['lname'] ."</td>";
+		echo "<td>" . $row['address'] . "</td>";
+		echo "<td>" . $row['phone'] . "</td>";
+		
+		echo "<td><form method=\"GET\" action=\"viewDog.php\">";
+		echo "<input type=\"hidden\" name=\"nameid\" value=\"".$row['dog_id']."\">";
+		echo "<input type=\"submit\" value=\"View Details\">";
+		echo "</form> </td><tr>";
+
+
+}
+echo" </tbody>
+	</table>
+</div>";
+?>
+
+
+</div>
 
 </div>
 </body>
