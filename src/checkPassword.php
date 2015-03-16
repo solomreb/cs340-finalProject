@@ -1,4 +1,5 @@
-<?php 
+<?php
+//checkPassword.php 
 include 'storedInfo.php';
 
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
@@ -70,7 +71,6 @@ else {
 	$stmt->bind_result($walker_id);
 	$stmt->fetch();
 	$_SESSION['walker_id'] = $walker_id;
-	console.log("walker_id = '$walker_id'");
     $response = "ok";
 }
 

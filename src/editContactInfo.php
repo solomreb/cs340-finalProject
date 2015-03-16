@@ -1,5 +1,5 @@
 <?php
-//editAvailability.php
+//editContactInfo.php
 session_start();
 include 'storedInfo.php';
 header('Location: index.php');
@@ -12,22 +12,17 @@ $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"s
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
     }     
-    
-    
-//delete previous entries for this usern
-$sqlQuery= "DELETE from walkers_time WHERE walker_id = '$walker_id'";
+  
+$sqlQuery= "UPDATE walkers SET phone = ?, email = ? WHERE walker_id='$walker_id';";	
+
+
+$phone = $_GET['phone'];
+$email = $_GET['email'];
+
 $stmt = $mysqli->prepare($sqlQuery);
+$stmt->bind_param('ss', $phone, $email);
 $stmt->execute();
 $stmt->close();
 
-$sqlQuery= "INSERT INTO  walkers_time(walker_id, time_id) VALUES ('$walker_id', ?);";	
-
-foreach ($_GET as $name){
-	$avail = $name;
-	$stmt = $mysqli->prepare($sqlQuery);
-	$stmt->bind_param('i', $avail);
-	$stmt->execute();
-	$stmt->close();
-}
 
 ?>

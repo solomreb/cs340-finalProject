@@ -1,7 +1,8 @@
 <?php
+//matchDogsWalkers.php
 session_start();
 include 'storedInfo.php';
-//header('Location: index.php');
+header('Location: index.php');
 
 $username= $_SESSION["username"];
 $walker_id = $_SESSION["walker_id"];
@@ -17,10 +18,6 @@ $query = "DELETE FROM dogs_walkers WHERE walker_id = '$walker_id'";
 if (!($stmt = mysqli_query($mysqli, $query))) {
 		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
-//$stmt->close();
-
-
-//for each time slot, find all dogs that need a walk & aren't already taken
 
 
 //select all time slots for walker
@@ -44,7 +41,6 @@ while ($timeSlots = mysqli_fetch_array($stmt)){
 		echo "$insertQuery<br>";
 		$insertResult = mysqli_query($mysqli, $insertQuery);
 	}
-
 }
 
 ?>

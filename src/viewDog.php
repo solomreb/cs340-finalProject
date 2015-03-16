@@ -1,5 +1,31 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      #map-canvas {
+        width: 500px;
+        height: 400px;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+function initialize() {
+  var myLatlng = new google.maps.LatLng(45.569612, -122.667468);
+  var mapOptions = {
+    zoom: 13,
+    center: myLatlng
+  }
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
 <?php
 session_start();
 $walker_id = $_SESSION['walker_id'];
@@ -16,7 +42,6 @@ $username = $_SESSION['username'];
 <?php
 //viewDog.php
 include 'storedInfo.php';
-//header("Location: index.php");
 
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
 if (!$mysqli || $mysqli->connect_errno){
@@ -24,8 +49,6 @@ if (!$mysqli || $mysqli->connect_errno){
     }
     
 $row = $_GET["dogid"];
-
-echo "viewing row " . $row . "\n";
 
 if (!($stmt = mysqli_query($mysqli, "SELECT d.name AS Name, b.breed_description as Breed, sn.sn_description as Notes, c.fname as FName, c.lname as LName, c.address as Address, c.phone as Phone FROM dogs d 
  INNER JOIN breeds b ON d.breed_id=b.breed_id 
@@ -61,5 +84,7 @@ while ($row = mysqli_fetch_array($stmt)) {
 
 echo "</table>";
 ?>
+
+<div id="map-canvas"></div>
 </div>
 </html>
