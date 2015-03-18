@@ -1,9 +1,15 @@
-<?php
+<?PHP
 //index.php
-include 'storedInfo.php';
 session_start();
-$walker_id = $_SESSION['walker_id'];
-$username = $_SESSION['username'];
+
+if (!(isset($_SESSION['username']) && $_SESSION['username'] != '')) {
+header ("Location: signin.html");
+}
+else {
+	$walker_id = $_SESSION['walker_id'];
+	$username = $_SESSION['username'];
+}
+include 'storedInfo.php';
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
@@ -13,7 +19,6 @@ if (!$mysqli || $mysqli->connect_errno){
 
 <!DOCTYPE html>
 <html>
-<!-- index.php -->
 <head>
   	<title>Dog Walking Database</title>
   	<meta charset="utf-8">
@@ -26,7 +31,7 @@ if (!$mysqli || $mysqli->connect_errno){
 <body>
     <div class="container">
       <h2>Dog Walking Database</h2>
-        <p class="navbar-text navbar-right"><?php echo "Logged in as " . $username . "<br>";?><a href="logout.php" class="navbar-link">Log out</a></p>       
+        <p class="navbar-text navbar-right"><?php echo "Logged in as " . $username . " | ";?><a href="logout.php" class="navbar-link">Log out</a></p>       
 
     </div>
 
@@ -125,7 +130,7 @@ echo <<<END
 				<td></td>
 				<td></td>
 				<td></td>
-				<td><input type="submit" value="Save"/></td>
+				<td><input type="submit" class="btn btn-primary" value="Save"></td>
 			</tr>
 		</tbody>
 	</table>
@@ -139,8 +144,8 @@ END;
   </div>
   
 <div class="container-fluid" id ="assign">
-<form action="errors.php">
-<input type="submit" value="Assign me to dogs">
+<form action="matchDogsWalkers.php">
+<input type="submit" value="Assign me to dogs" class="btn btn-primary">
 </form>
 <?php
 
@@ -182,7 +187,7 @@ while ($row = mysqli_fetch_array($stmt)) {
 		
 		echo "<td><form method=\"GET\" action=\"viewDog.php\">";
 		echo "<input type=\"hidden\" name=\"dogid\" value=\"".$row['dog_id']."\">";
-		echo "<input type=\"submit\" value=\"View Details\">";
+		echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"View Details\">";
 		echo "</form> </td><tr>";
 
 

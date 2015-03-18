@@ -1,5 +1,6 @@
-
 <?php
+session_start();
+
 include 'storedInfo.php';
 //header('Location: index.php');
 
@@ -7,6 +8,7 @@ $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"s
 if (!$mysqli || $mysqli->connect_errno){
     echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
     }
+    
 $fname = $_POST["fname"]; 
 $lname = $_POST["lname"];    
 $phone = $_POST["phone"];    

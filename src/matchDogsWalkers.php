@@ -1,6 +1,7 @@
 <?php
 //matchDogsWalkers.php
 session_start();
+
 include 'storedInfo.php';
 header('Location: index.php');
 
@@ -41,6 +42,7 @@ while ($timeSlots = mysqli_fetch_array($stmt)){
 		echo "$insertQuery<br>";
 		$insertResult = mysqli_query($mysqli, $insertQuery);
 	}
+	
 }
 
 ?>

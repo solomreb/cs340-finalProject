@@ -1,5 +1,7 @@
 <?php
-//checkPassword.php 
+//checkPassword.php
+session_start();
+
 include 'storedInfo.php';
 
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "solomreb-db", $myPassword,"solomreb-db");

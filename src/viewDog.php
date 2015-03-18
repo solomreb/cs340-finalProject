@@ -1,3 +1,11 @@
+<?php
+
+session_start();
+
+if (!(isset($_SESSION['username']) && $_SESSION['username'] != '')) {
+header ("Location: signin.html");
+}
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -7,24 +15,6 @@
         height: 400px;
       }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script>
-function initialize() {
-  var myLatlng = new google.maps.LatLng(45.569612, -122.667468);
-  var mapOptions = {
-    zoom: 13,
-    center: myLatlng
-  }
-  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-  });
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
   </head>
 <?php
 session_start();
@@ -50,7 +40,7 @@ if (!$mysqli || $mysqli->connect_errno){
     
 $row = $_GET["dogid"];
 
-if (!($stmt = mysqli_query($mysqli, "SELECT d.name AS Name, b.breed_description as Breed, sn.sn_description as Notes, c.fname as FName, c.lname as LName, c.address as Address, c.phone as Phone FROM dogs d 
+if (!($stmt = mysqli_query($mysqli, "SELECT DISTINCT d.name AS Name, b.breed_description as Breed, sn.sn_description as Notes, c.fname as FName, c.lname as LName, c.address as Address, c.phone as Phone FROM dogs d 
  INNER JOIN breeds b ON d.breed_id=b.breed_id 
  INNER JOIN dogs_special_needs dsn ON d.dog_id=dsn.dog_id
  INNER JOIN special_needs sn ON dsn.sn_id=sn.sn_id  
@@ -58,8 +48,7 @@ if (!($stmt = mysqli_query($mysqli, "SELECT d.name AS Name, b.breed_description 
 	echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
 
-echo " <table class='table table-hover'>			
-		<thead><h3>Your dogs</h3>	
+echo " <table class='table table-hover'>				
 			<tr style='height: 30px'>	
 				<th style='width: 10%;'>Name</th>
 				<th style='width: 10%;'>Breed</th>
@@ -71,7 +60,6 @@ echo " <table class='table table-hover'>
 		</thead>";
 
 while ($row = mysqli_fetch_array($stmt)) {
-		
 		echo "<tr>";
 		echo "<td>" . $row['Name'] . "</td>";
 		echo "<td>" . $row['Breed'] . "</td>";
@@ -79,12 +67,13 @@ while ($row = mysqli_fetch_array($stmt)) {
 		echo "<td>" . $row['Address'] . "</td>";
 		echo "<td>" . $row['Phone'] . "</td>";
 		echo "<td>" . $row['Notes'] . "</td>";
+		echo "<td><a href='http://maps.google.com/?q=" . $row['Address'] . "' target='_blank'>View map</a></td>";
 		echo "</tr>";
 }
 
 echo "</table>";
 ?>
 
-<div id="map-canvas"></div>
-</div>
+    <div id="map-canvas"></div>
+
 </html>
