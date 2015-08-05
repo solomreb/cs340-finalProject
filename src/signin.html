@@ -9,32 +9,67 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<div class="container-fluid">
-		<h2> Dog Walking Database </h2>
 	</div>
     <style>
-        .error {
-            display: none;
-            color: #a00000;
-            font-weight: bold;
-        }
-        #progress {
-            visibility: hidden;
-            color: #00a000;
-        }
+			body {
+				padding-top: 40px;
+				padding-bottom: 40px;
+				background-color: #eee;
+			}
+
+			.form-signin {
+				max-width: 330px;
+				padding: 15px;
+				margin: 0 auto;
+			}
+			.form-signin .form-signin-heading,
+			.form-signin .checkbox {
+				margin-bottom: 10px;
+			}
+			.form-signin .checkbox {
+				font-weight: normal;
+			}
+			.form-signin .form-control {
+				position: relative;
+				height: auto;
+				-webkit-box-sizing: border-box;
+					 -moz-box-sizing: border-box;
+								box-sizing: border-box;
+				padding: 10px;
+				font-size: 16px;
+			}
+			.form-signin .form-control:focus {
+				z-index: 2;
+			}
+			.form-signin input[type="email"] {
+				margin-bottom: -1px;
+				border-bottom-right-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+			.form-signin input[type="password"] {
+				margin-bottom: 10px;
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+    
+    	.form-control {
+    		float: left;
+    	}
+			.error {
+					display: none;
+					color: #a00000;
+					font-weight: bold;
+					float: right;
+			}
+			#progress {
+					visibility: hidden;
+					color: #00aa00;
+			}
     </style>
     <script type="text/javascript" src="ajax_form.js"></script>
-    <style>
-        .error {
-            display: none;
-            color: #a00000;
-            font-weight: bold;
-        }
-        #progress {
-            visibility: hidden;
-            color: #00a000;
-        }
-    </style>
-    <script type="text/javascript">     
+    <script type="text/javascript">  
+        var baseURL = "http://web.engr.oregonstate.edu/~solomreb/cs340/finalProject/src/";   
+        
         function HideAllErrorFields () {
             for (var i = 1; i <= 4; i++) {
                 var field = document.getElementById ("error" + i);
@@ -65,15 +100,15 @@
                 
                 if (IsRequestSuccessful (httpRequest)) {    // defined in ajax_form.js
                     if (httpRequest.responseText === "ok") {    // registration is successful
-                        alert ("Thank you for signing in");
-                        location.href = "http://web.engr.oregonstate.edu/~solomreb/cs290/finalProject/src/index.php";    
+                        //alert ("Thank you for signing in");
+                        location.href = baseURL.concat("index.php");    
                     }
                     else {  // some fields are invalid
                         ShowErrorFields (httpRequest.responseText);
                     }
                 }
                 else {
-                    alert ("An error occurred while registering. Please try it again.");
+                    alert ("An error occurred while registering. Please try again.");
                 }
             }
         }
@@ -127,23 +162,25 @@
     </script>
 </head>
 <body>
-<div class="container-fluid">
-	<a href="register.html">I don't have an account</a><br>
-    <legend>Sign In</legend><br>
+<div class="container">
 
-    <form id="signInForm" onsubmit="AjaxSend (this, 'http://web.engr.oregonstate.edu/~solomreb/cs290/finalProject/src/checkPassword.php', 'post'); return false;">
+    <form class="form-signin" id="signInForm" onsubmit="AjaxSend (this, 'http://web.engr.oregonstate.edu/~solomreb/cs340/finalProject/src/checkPassword.php', 'post'); return false;">
+    	<h2 class="form-signin-heading">Sign In</h2>
     	<div class="form-group">
-        	User Name: <input type="text" name="userName" />
-        	<div class="error" id="error1">No such username.</div>
+        	<label for="userName" class="sr-only">Username</label>
+        		<input type="text" class="form-control" name="userName" id="userName" placeholder="Username"/>
+        		<div class="error" id="error1">No such username.</div>
     		<div class="error" id="error2">Missing username.</div>
-        </div>
+      </div>
     	<div class="form-group">
-        	Password: <input type="password" name="password" />
+    			<label for="password" class="sr-only">Password</label> 
+        	<input type="password" class="form-control" name="password" id="password" placeholder="Password">
         	<div class="error" id="error3">Wrong password.</div>
         	<div class="error" id="error4">Must be between 6 and 20 characters.</div>
         </div>
-        	<input type="submit" value="Sign In" />
+        	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
         	<div id="progress">Signing in</div><br><br>
+  <a href="register.html">I don't have an account</a><br>
 </div>
         
     </form>
